@@ -1,2 +1,2 @@
-FROM nginx:1.21-alpine
+FROM docker.io/library/nginx:alpine-slim
 COPY default.conf /etc/nginx/conf.d/default.conf

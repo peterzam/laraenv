@@ -3,30 +3,28 @@ services:
   cli:
     build: cli
     volumes:
-      - ..:/workspaces/laravel
+      - ../app:/workspaces/laravel
+    userns_mode: keep-id
 
   fpm:
     build: fpm
     volumes:
-      - ..:/workspaces/laravel
-    user: 1000:1000
+      - ../app:/workspaces/laravel
+    ports: 
+      - 9000:9000
 
   nginx:
     build: nginx
     volumes:
-      - ..:/workspaces/laravel
+      - ../app:/workspaces/laravel
     ports:
-      - 80:80
+      - 8080:80
     depends_on:
       - fpm
 
   postgres:
-    image: postgres:13-alpine
+    image: docker.io/library/postgres:alpine
     environment:
       POSTGRES_DB: laravel
       POSTGRES_USER: root
       POSTGRES_HOST_AUTH_METHOD: trust
-
-  redis:
-    image: redis:6.2-alpine
-
