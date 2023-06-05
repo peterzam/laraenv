@@ -1,0 +1,28 @@
+# From official php image.
+FROM php:8.0.28-apache
+
+# Create a user group and account under id 1000.
+RUN groupadd -g 1000 -r user && useradd -u 1000 -s /bin/bash -r -g 1000 -m user
+
+# Install composer
+COPY --from=docker.io/library/composer:latest /usr/bin/composer /usr/bin/composer
+
+# Install packages
+RUN apt update && apt install -yq --no-install-recommends \
+    libcurl4-openssl-dev \
+    zlib1g-dev \
+    libpng-dev \
+    libonig-dev \
+    openssl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt autoclean && apt autoremove --purge && apt clean \
+    && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+
+# Install mysqli driver.
+# openssl has error, and imo ssl should not be managed by PHP
+RUN docker-php-ext-install -j$(nproc) curl fileinfo gd mbstring mysqli \
+    && docker-php-ext-enable curl fileinfo gd mbstring mysqli
+
+# Background
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]

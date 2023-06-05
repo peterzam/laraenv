@@ -1,30 +1,13 @@
 version: "3.9"
 services:
-  cli:
-    build: cli
+  server:
+    container_name: laraenv_server
+    build: php
     volumes:
-      - ../app:/workspaces/laravel
+      - ../app:/var/www/html
+      - ./php/php.ini:/usr/local/etc/php/php.ini
+      - ./php/apache2.conf:/etc/apache2/apache2.conf
+      - ./php/default.conf:/etc/apache2/sites-enabled/default.conf
     userns_mode: keep-id
-
-  fpm:
-    build: fpm
-    volumes:
-      - ../app:/workspaces/laravel
-    ports: 
-      - 9000:9000
-
-  nginx:
-    build: nginx
-    volumes:
-      - ../app:/workspaces/laravel
     ports:
-      - 8080:80
-    depends_on:
-      - fpm
-
-  postgres:
-    image: docker.io/library/postgres:alpine
-    environment:
-      POSTGRES_DB: laravel
-      POSTGRES_USER: root
-      POSTGRES_HOST_AUTH_METHOD: trust
+      - 8001:8001
