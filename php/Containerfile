@@ -14,6 +14,7 @@ RUN apt update && apt install -yq --no-install-recommends \
     libpng-dev \
     libonig-dev \
     openssl \
+    libzip-dev \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge && apt clean \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
@@ -21,8 +22,8 @@ RUN apt update && apt install -yq --no-install-recommends \
 
 # Install mysqli driver.
 # openssl has error, and imo ssl should not be managed by PHP
-RUN docker-php-ext-install -j$(nproc) curl fileinfo gd mbstring mysqli \
-    && docker-php-ext-enable curl fileinfo gd mbstring mysqli
+RUN docker-php-ext-install -j$(nproc) curl fileinfo gd mbstring mysqli zip \
+    && docker-php-ext-enable curl fileinfo gd mbstring mysqli zip
 
 # Background
 CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]

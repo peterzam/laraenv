@@ -5,9 +5,11 @@ services:
     build: php
     volumes:
       - ../app:/var/www/html
+      # - ./php/htaccess:/var/www/html/.htaccess
       - ./php/php.ini:/usr/local/etc/php/php.ini
       - ./php/apache2.conf:/etc/apache2/apache2.conf
       - ./php/default.conf:/etc/apache2/sites-enabled/default.conf
     userns_mode: keep-id
     ports:
       - 8001:8001
+      - 8080:8080
