@@ -4,7 +4,7 @@ services:
     container_name: laraenv_server
     build: php
     volumes:
-      - ../app:/var/www/html
+      - ../Laravel_Assignment_Quickstart:/var/www/html
       # - ./php/htaccess:/var/www/html/.htaccess
       - ./php/php.ini:/usr/local/etc/php/php.ini
       - ./php/apache2.conf:/etc/apache2/apache2.conf
@@ -13,3 +13,16 @@ services:
     ports:
       - 8001:8001
       - 8080:8080
+    environment:
+      - HOST_URL="host.containers.internal"
+
+  db:
+    container_name: laraenv_db
+    image: docker.io/library/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=laravel
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=user
+    ports:
+      - 3306:3306

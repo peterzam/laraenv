@@ -1,5 +1,5 @@
 # From official php image.
-FROM php:8.0.28-apache
+FROM php:8.0.26-apache
 
 # Create a user group and account under id 1000.
 RUN groupadd -g 1000 -r user && useradd -u 1000 -s /bin/bash -r -g 1000 -m user
@@ -21,9 +21,13 @@ RUN apt update && apt install -yq --no-install-recommends \
     && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
 
 # Install mysqli driver.
-# openssl has error, and imo ssl should not be managed by PHP
-RUN docker-php-ext-install -j$(nproc) curl fileinfo gd mbstring mysqli zip \
-    && docker-php-ext-enable curl fileinfo gd mbstring mysqli zip
+RUN docker-php-ext-install -j$(nproc) curl fileinfo gd mbstring mysqli pdo pdo_mysql zip \
+    && docker-php-ext-enable curl fileinfo gd mbstring mysqli pdo pdo_mysql zip
 
-# Background
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+USER user
+
+ENV PATH /home/user/.composer/vendor/bin:$PATH
+
+RUN composer global require laravel/installer
+
+ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
