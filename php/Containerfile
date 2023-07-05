@@ -32,4 +32,4 @@ ENV PATH=/home/user/.composer/vendor/bin:$PATH \
 
 RUN composer global require laravel/installer
 
-ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
